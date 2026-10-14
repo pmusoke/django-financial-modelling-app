@@ -279,7 +279,7 @@ Manual tests were carried out on the application with the areas covered being:
 - IRR, DSCR and investment premium calculations 
 - Balance sheet reconciliation
 - Scenario comparison and isolation
-- Numberical precision and financial statement formatting
+- Numerical precision and financial statement formatting
 - Navigation, responsiveness and data persistence
 - Edge cases and end-to-end application functionality
 
@@ -305,8 +305,8 @@ Balance-sheet checks were also done to ensure that the total assets was equall t
 1. clone the repository:
 
 ```
-git clone https://github.com/pmusoke/REPOSITORY.git
-cd REPOSITORY
+git clone https://github.com/pmusoke/django-financial-modelling-app
+cd django-financial-modelling-app/gridline
 ```
 
 2. Create a Python virtual environment:
@@ -328,13 +328,27 @@ On Windows PowerShell:
 .venv\Scripts\Activate.ps1
 ```
 
-4. Instrall the needed dependencies
+4. Install the needed dependencies
 
 ```
 python -m pip install -r requirements.txt
 ```
 
-5. Configure required environment variables described in the project configuration
+5. Configure environment variables
+
+Create a file named .env in the same directory as manage.py and add:
+
+```
+DJANGO_SECRET_KEY="replace-with-your-own-generated-secret-key"
+```
+
+To generate a secure key, run:
+
+```
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+Copy the generated value into your .env file.
 
 6. Apply Django database migrations:
 
