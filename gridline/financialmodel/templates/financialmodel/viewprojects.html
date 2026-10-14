@@ -1,0 +1,71 @@
+{% extends "financialmodel/layout.html" %}
+{% load financial_filters %}
+
+{% load static %}
+
+{% block body %}
+
+{% if message %}
+<div>
+    <p>{{ message }}</p>
+</div>
+{% else %}
+<div class="project-block">
+
+    {% for metric in metrics %}
+    <div class="scenario-card">
+        <h1><a href="{% url 'project_comparison' metric.related_scenario.related_project.id %}">{{ metric.related_scenario.related_project.name }}</a></h1>
+        <div class="project-scenario-names-row"> 
+            <h1 class="scenario-name-view-projects">{{ metric.related_scenario.scenario_name }}</h1>
+            <h1>Scenario {{ metric.related_scenario.scenario_number }}</h1>
+        </div>
+
+        <table class="project-table">
+            <tr>
+                <th>Internal Rate of Return</th>
+                <th>Mininum Debt Service Coverage Ratio</th>
+                <th>Average Debt Service Coverage Ratio</th>
+                <th>Investment Premium</th>
+            </tr>
+            <tr>
+                <td>{{ metric.irr|percentage }}</td>
+                <td>{{ metric.min_dscr|ratio_format }}</td>
+                <td>{{ metric.avg_dscr|ratio_format }}</td>
+                <td>${{ metric.investment_premium|floatformat:2 }}k</td>
+            </tr>
+        </table>
+
+        <h2>Financial Statements</h2>
+        <div class="financial-statements-link-row">
+            <a href="{% url 'quarterly_financial_statements' metric.related_scenario.id %}">Quarterly</a>
+            <a href="{% url 'annual_financial_statements' metric.related_scenario.id %}">Annual</a>
+        </div>
+
+        <h2>Calculation Details</h2>
+        <div class="calculatiton-details-link-row">
+            <a href="{% url 'irr_detail' metric.related_scenario.id %}">Internal Rate of Return Calculation</a>
+            <a href="{% url 'investment_premium' metric.related_scenario.id %}">Investment Premium</a>
+            <a href="{% url 'dscr' metric.related_scenario.id %}">DSCR</a>
+        </div>
+
+        <h2>Options</h2>
+        <div class="update-delete-scenario-row">
+            <a href="{% url 'updatescenario' metric.related_scenario.id %}">Update Scenario</a>
+            <a href="{% url 'deletescenario' metric.related_scenario.id %}">Delete Scenario</a>
+        </div>
+
+    </div>
+    {% endfor %}
+
+
+
+
+
+
+
+
+
+</div>
+{% endif %}
+
+{% endblock %}

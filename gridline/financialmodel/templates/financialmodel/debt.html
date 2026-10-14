@@ -1,0 +1,234 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<section class="calculation-section">
+    <h1>Senior Debt Level Principal Repayment</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Gearing</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.senior_debt_gearing|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Solar Asset Book Value</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.book_value|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Drawdown</td>
+                <td>$ 000s</td>
+                <td>Senior Debt Gearing * Solar Asset Book Value</td>
+                {% for timeline in timelines %}
+                    <td>{{ senior_debt_drawdown|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Repayment Term</td>
+                <td>years</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.repayment_term }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Number of periods in a year</td>
+                <td>periods</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>4</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Repayment Period Flag</td>
+                <td>flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.senior_debt_repayment_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Level Principal Repayment</td>
+                <td>$ 000s</td>
+                <td>(Senior Debt Drawdown / Senior Debt Repayment Term / Number of Periods) * Senior Debt Repayment Period Flag</td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_repayment|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Senior Debt Blance</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for senior_debt_balance_beg in senior_debt_balance_begs %}
+                    <td>{{ senior_debt_balance_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Additional senior debt drawdown</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>0</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Principal Repayment</td>
+                <td>$ 000s</td>
+                <td>(Senior Debt Drawdown / Senior Debt Repayment Term / Number of Periods) * Senior Debt Repayment Period Flag</td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_repayment|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Balance</td>
+                <td>$ 000s</td>
+                <td>Senior Debt Balance BEG + Additional Senior Debt Drawdown - Senior Debt Principal Repayment</td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt|currency_format }}</td>
+                {% endfor %}
+            </tr>
+            
+        </table>
+    </div>
+</section>
+
+
+<section class="calculation-section">
+    <h1>Senior Debt Interest</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Swap Rate</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.senior_debt_swap_rate|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Interest Margin</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.senior_debt_int_margin|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>All in annual senior debt interest rate</td>
+                <td>%</td>
+                <td>Senior Debt Swap Rate + Senior Debt Interest Margin</td>
+                {% for timeline in timelines %}
+                    <td>{{ all_in_annual_senior_debt_interest_rate|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Day Count Convention</td>
+                <td>days</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.senior_debt_day_convention }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Days in period</td>
+                <td>days</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.days_in_period }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Period Interest Rate</td>
+                <td>%</td>
+                <td>All in annual senior debt interest rate * (Days in Period/Senior Debt Day Count Convention)</td>
+                {% for senior_debt_period_interest_rate in senior_debt_period_interest_rates %}
+                    <td>{{ senior_debt_period_interest_rate|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for senior_debt_balance_beg in senior_debt_balance_begs %}
+                    <td>{{ senior_debt_balance_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Interest</td>
+                <td>$ 000s</td>
+                <td>Senior Debt Balance BEG * Senior Debt Period Interest Rate</td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+            
+        </table>
+    </div>
+</section>
+
+{% endblock %}

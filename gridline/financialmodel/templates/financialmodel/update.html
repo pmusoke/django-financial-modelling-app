@@ -1,0 +1,237 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+<div class="create-scenario-form-div">
+    <form action="{% url 'updatescenario' scenario.id %}" class="registration-form" method="post">
+        {% csrf_token %}
+
+        <h2>Scenario Details</h2>
+
+        <div class="form-field">
+            {{  form.scenario_name.label_tag  }}
+            {{  form.scenario_name  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.scenario_number.label_tag  }}
+            {{  form.scenario_number  }}
+        </div>
+
+        <h2>Timelines</h2>
+
+        <div class="form-field">
+            {{  form.first_date_of_time_rulers.label_tag  }}
+            {{  form.first_date_of_time_rulers  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.end_of_first_operating_period.label_tag  }}
+            {{  form.end_of_first_operating_period  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.acquisition_date.label_tag  }}
+            {{  form.acquisition_date  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.length_of_contract.label_tag  }}
+            {{  form.length_of_contract  }}
+        </div>
+
+        <h2>Revenue</h2>
+
+        <div class="form-field">
+            {{  form.q1_sa.label_tag  }}
+            {{  form.q1_sa  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.q2_sa.label_tag  }}
+            {{  form.q2_sa  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.q3_sa.label_tag  }}
+            {{  form.q3_sa  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.q4_sa.label_tag  }}
+            {{  form.q4_sa  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.annual_degredation.label_tag  }}
+            {{  form.annual_degredation  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.year_1_p50_production.label_tag  }}
+            {{  form.year_1_p50_production  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.availability.label_tag  }}
+            {{  form.availability  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.power_tarrif.label_tag  }}
+            {{  form.power_tarrif  }}
+        </div>
+
+        <h3>OPEX</h3>
+
+        <div class="form-field">
+            {{  form.annual_om_cost.label_tag  }}
+            {{  form.annual_om_cost  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.cpi_at_close.label_tag  }}
+            {{  form.cpi_at_close  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.cpi_sign_date.label_tag  }}
+            {{  form.cpi_sign_date  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.cpi_growth_rate.label_tag  }}
+            {{  form.cpi_growth_rate  }}
+        </div>
+
+        <h3>Senior Debt</h3>
+
+        <div class="form-field">
+            {{  form.senior_debt_gearing.label_tag  }}
+            {{  form.senior_debt_gearing  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.senior_debt_day_convention.label_tag  }}
+            {{  form.senior_debt_day_convention  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.senior_debt_swap_rate.label_tag  }}
+            {{  form.senior_debt_swap_rate  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.senior_debt_int_margin.label_tag  }}
+            {{  form.senior_debt_int_margin  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.repayment_term.label_tag  }}
+            {{  form.repayment_term  }}
+        </div>
+
+        <h3>Revolving Credit Facility</h3>
+
+        <div class="form-field">
+            {{  form.rcf_interest_rate.label_tag  }}
+            {{  form.rcf_interest_rate  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.rcf_innit.label_tag  }}
+            {{  form.rcf_innit  }}
+        </div>
+
+        <h3>Equity</h3>
+
+        <div class="form-field">
+            {{  form.share_of_project.label_tag  }}
+            {{  form.share_of_project  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.target_irr.label_tag  }}
+            {{  form.target_irr  }}
+        </div>
+
+        <h3>Working Capital</h3>
+
+        <div class="form-field">
+            {{  form.accounts_receivable_days.label_tag  }}
+            {{  form.accounts_receivable_days  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.accounts_payable_days.label_tag  }}
+            {{  form.accounts_payable_days  }}
+        </div>
+
+        <h3>Depreciation</h3>
+
+        <div class="form-field">
+            {{  form.useful_life.label_tag  }}
+            {{  form.useful_life  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.book_value.label_tag  }}
+            {{  form.book_value  }}
+        </div>
+
+        <h3>Assets</h3>
+
+        <div class="form-field">
+            {{  form.retained_cash_innit.label_tag  }}
+            {{  form.retained_cash_innit  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.accounts_recievable_innit.label_tag  }}
+            {{  form.accounts_recievable_innit  }}
+        </div>
+
+        <h3>Liabilities</h3>
+
+        <div class="form-field">
+            {{  form.accounts_payable_innit.label_tag  }}
+            {{  form.accounts_payable_innit  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.retained_earnings_innit.label_tag  }}
+            {{  form.retained_earnings_innit  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.deffered_tax_innit.label_tag  }}
+            {{  form.deffered_tax_innit  }}
+        </div>
+
+        <h3>Tax</h3>
+
+        <div class="form-field">
+            {{  form.tax_rate.label_tag  }}
+            {{  form.tax_rate  }}
+        </div>
+
+        <div class="form-field">
+            {{  form.tax_depreciation_rate.label_tag  }}
+            {{  form.tax_depreciation_rate }}
+        </div>
+
+        <div class="form-field">
+            {{  form.tax_losses_carried_forward_innit.label_tag  }}
+            {{  form.tax_losses_carried_forward_innit }}
+        </div>
+
+
+
+        <input class="create-scenario-button" type="submit" value="Update Scenario">
+
+    </form>
+</div>
+
+{% endblock %}

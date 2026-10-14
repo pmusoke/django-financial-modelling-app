@@ -1,0 +1,143 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<h1>Depreciation</h1>
+
+<section class="calculation-section">
+    <h1>Depreciation</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Solar Asset Book Value</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.book_value|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Useful life of solar asset</td>
+                <td>years</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.useful_life }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Number of periods in a year</td>
+                <td>periods</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>4</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Useful Life Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.useful_life_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Depreciation</td>
+                <td>$ 000s</td>
+                <td>Solar Asset Book Value / Useful life of solar asset / Number of periods in a year * Useful Life Flag</td>
+                {% for depreciation in depreciations %}
+                    <td>{{ depreciation.depreciation|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Solar Asset Balance</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Solar Asset Book Value - Initial Balance</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.book_value|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Solar asset balance balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for solar_asset_book_value_beg in solar_asset_book_value_begs %}
+                    <td>{{ solar_asset_book_value_beg.solar_asset_value|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Additions</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td> 0.00 </td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Depreciation</td>
+                <td>$ 000s</td>
+                <td>Solar Asset Book Value / Useful life of solar asset / Number of periods in a year * Useful Life Flag</td>
+                {% for depreciation in depreciations %}
+                    <td>{{ depreciation.depreciation|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Solar Asset Book Value</td>
+                <td>$ 000s</td>
+                <td>If Financial Close Date Flag = 1, Solar Asset Book Value - Initial Balance, else, Solar Asset Book Value Beg + Additions - Depreciation</td>
+                {% for depreciation in depreciations %}
+                    <td>{{ depreciation.solar_asset_value|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+{% endblock %}

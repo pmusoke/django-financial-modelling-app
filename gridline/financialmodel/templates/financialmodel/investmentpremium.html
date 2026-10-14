@@ -1,0 +1,343 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+
+<section class="calculation-section">
+    <h1>Discount Factor</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Days In Year</td>
+                <td>Days</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ days_in_year }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Cumulative Days Since Financial Close</td>
+                <td>Days</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.cumulative_days }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Years since financial close</td>
+                <td></td>
+                <td>(Cumulative Days Since Financial Close / Days In Year)</td>
+                {% for years_since_financial_close in years_since_financial_closes %}
+                    <td>{{ years_since_financial_close }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Target IRR</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.target_irr|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Operating Period Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.operating_period_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Discount Factor</td>
+                <td></td>
+                <td>(1/(1 + Target IRR) ** Years Since Financial Close) * Max of Financial Close Date Flag or Operating Period Flag</td>
+                {% for discount_factor in discount_factors %}
+                    <td>{{ discount_factor }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Investment Capital</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Capital Drawdown</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Of Project</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.share_of_project|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Investment Capital</td>
+                <td>$ 000s</td>
+                <td>-1 * Share Capital Drawdown * Share Of Project</td>
+                {% for investment_capital in investment_capitals %}
+                    <td>{{ investment_capital|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Share of Dividends</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Dividends Paid</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.dividends_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Of Project</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.share_of_project|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Share Of Dividends</td>
+                <td>$ 000s</td>
+                <td>Dividends Paid * Share Of Project</td>
+                {% for share_of_dividend in share_of_dividends %}
+                    <td>{{ share_of_dividend|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Share of Capital Redemption</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Capital Redemption</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for share_capital_object in share_capital_objects %}
+                    <td>{{ share_capital_object.share_capital_redemption|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Of Project</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.share_of_project|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+            <tr class="total-row">
+                <td>Share Of Capital Redemption</td>
+                <td>$ 000s</td>
+                <td>Share Capital Redemption * Share of Project</td>
+                {% for share_of_redemption in share_of_redemptions %}
+                    <td>{{ share_of_redemption|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Cash Flow</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Investment Capital</td>
+                <td>$ 000s</td>
+                <td>-1 * Share Capital Drawdown * Share Of Project</td>
+                {% for investment_capital in investment_capitals %}
+                    <td>{{ investment_capital|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Share Of Dividends</td>
+                <td>$ 000s</td>
+                <td>Dividends Paid * Share Of Project</td>
+                {% for share_of_dividend in share_of_dividends %}
+                    <td>{{ share_of_dividend|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Share Of Capital Redemption</td>
+                <td>$ 000s</td>
+                <td>Share Capital Redemption * Share of Project</td>
+                {% for share_of_redemption in share_of_redemptions %}
+                    <td>{{ share_of_redemption|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Flow</td>
+                <td>$ 000s</td>
+                <td>Investment Capital + Share of Dividends + Share Of Capital Redemption</td>
+                {% for cash_flow in cash_flows %}
+                    <td>{{ cash_flow|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Present Value Cash Flow</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Discount Factor</td>
+                <td></td>
+                <td>(1/(1 + Target IRR) ** Years Since Financial Close) * Max of Financial Close Date Flag or Operating Period Flag</td>
+                {% for discount_factor in discount_factors %}
+                    <td>{{ discount_factor }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Flow</td>
+                <td>$ 000s</td>
+                <td>Investment Capital + Share of Dividends + Share Of Capital Redemption</td>
+                {% for cash_flow in cash_flows %}
+                    <td>{{ cash_flow|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Present Value Cash Flow</td>
+                <td>$ 000s</td>
+                <td>Discount Factor * Cash Flow</td>
+                {% for present_value_cash_flow in present_value_cash_flows %}
+                    <td>{{ present_value_cash_flow|currency_format }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Investment Premium</h1>
+    <div class="calculation-div">
+        <table>
+
+
+            <tr>
+                <td>Investment Premium</td>
+                <td>$ 000s</td>
+                <td>Sum Of Present Value Cash Flows</td>
+                <td>{{ metrics.investment_premium|currency_format }}</td>
+            </tr>
+        </table>
+
+    </div>
+</section>
+
+{% endblock %}

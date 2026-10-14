@@ -1,0 +1,227 @@
+html {
+    background-color: black;
+    color: white;
+}
+
+.vertical-navigation-panel {
+    border-bottom-style: solid;
+}
+
+.vertical-navigation-panel ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: rgb(42, 41, 41);
+}
+
+.vertical-navigation-panel ul li {
+    float: left;
+}
+
+.vertical-navigation-panel ul li a {
+    display: block;
+    color: gold;
+    text-align: center;
+    padding: 15px 15px;
+    text-decoration: none;
+}
+
+.vertical-navigation-panel ul li a:hover {
+    background-color: black;
+}
+
+
+.login-form-div, .create-project-form-div {
+    border: solid;
+    border-color: grey;
+
+    display: flex;
+    justify-content: center;
+
+    margin-top: 300px;
+
+    width: 20%;
+    margin-left: auto;
+    margin-right: auto;
+
+    background-color: grey;
+    border-radius: 40px;
+    
+}
+
+.login-form, .project-form {
+    padding-top: 40px;
+    padding-bottom: 40px;
+
+}
+
+.create-scenario-form-div {
+    border: solid;
+    border-color: grey;
+
+    background-color: grey;
+
+    display: flex;
+    justify-content: center;
+
+    margin-top: 100px;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+    border-radius: 40px;
+}
+
+.scenario-form {
+    padding-top: 40px;
+    padding-bottom: 40px;
+
+    width: 100%;
+    max-width: 100%;
+}
+
+
+
+
+
+.project-table th {
+    background-color: rgb(87, 1, 87);
+
+}
+
+.project-table td {
+    background-color: purple;
+
+
+}
+
+a {
+    color: gold;
+}
+
+.statement-of-comprehensive-income th {
+    background-color: rgb(87, 1, 87);
+}
+
+.statement-of-comprehensive-income td {
+    background-color: purple;
+
+    width: 500px;
+}
+
+
+.scenario-card {
+    margin-top: 20px;
+    border-style: solid;
+    border-color: grey;
+    border-radius: 40px;
+
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.project-scenario-names-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.update-delete-scenario-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.financial-statements-link-row, .calculatiton-details-link-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.form-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.create-scenario-button {
+    background-color: black;
+    color:white;
+
+    width: 100%;
+    max-width: 100%;
+    border-radius: 40px;
+
+    box-sizing: border-box;
+
+    font-weight: bold;
+}
+
+
+.financial-statement-section, .calculation-section {
+    width: 95%;
+    margin: 30px auto;
+
+}
+
+.financial-statement-div, .calculation-div {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.financial-statement-div table, .calculation-div table {
+    border-collapse: collapse;
+    white-space: nowrap;
+    width: max-content;
+}
+
+.financial-statement-div th, .financial-statement-div td, .calculation-div th, .calculation-div td {
+    border: 1px solid #555;
+    text-align: right;
+}
+
+.financial-statement-div th, .calculation-div th {
+    text-align: center;
+}
+
+.financial-statement-div td:first-child, .financial-statement-div td:nth-child(2), .calculation-div td:first-child, .calculation-div td:nth-child(2), .calculation-div td:nth-child(3) {
+    text-align: left;
+}
+
+.financial-statement-div th:first-child, .financial-statement-div td:first-child, .calculation-div th:first-child , .calculation-div td:first-child{
+    position: sticky;
+    left: 0;
+    min-width: 290px;
+    z-index: 2;
+    background-color: black;
+}
+
+
+
+.total-row {
+    background-color: purple;
+}
+
+.PASS {
+    color: greenyellow;
+}
+
+.FAIL {
+    color: red;
+}
+
+
+

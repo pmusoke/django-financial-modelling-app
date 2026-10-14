@@ -1,0 +1,50 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %} Financial Model Application{% endblock %} </title>
+        <link href="{% static 'financialmodel/styles.css' %}" rel="stylesheet">
+        {% block script %}
+        {% endblock %}
+    </head>
+    <body>
+        <div class="vertical-navigation-panel">
+            <ul>
+                <li><a href="{% url 'index' %}">About</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'createproject' %}">Create New Project</a></li>
+                <li><a href="{% url 'viewprojects' user.username %}">View Projects</a></li>
+                <li><a href="{% url 'logout_view' %}">Logout</a></li>
+                <li><a href="{% url 'createscenario' %}">Create New Scenario</a></li>
+                {% else %}
+                <li><a href="{% url 'register' %}">Register An Account</a></li>
+                <li><a href="{% url 'login_view' %}">Login</a></li>
+                {% endif %}
+                
+            </ul>
+        </div>
+
+        {% if isprojectview %}
+        <div class="horizontal-navigation-panel">
+            <ul>
+                <li><a href="#createscenorio">Create New Scenario</a></li>
+                <li><a >View All Scenarios</a></li>
+            </ul>
+
+
+        </div>
+        {% endif %}
+
+
+
+
+    </body>
+    <div class="body">
+        {% block body %}
+        {% endblock %}
+    </div>
+
+
+</html>
+

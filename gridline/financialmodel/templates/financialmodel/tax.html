@@ -1,0 +1,622 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<h1>Tax</h1>
+<section class="calculation-section">
+    <h1>Accounting For Tax</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+            <td>Corporate Income Tax Rate</td>
+            <td>%</td>
+            <td></td>
+            {% for timeline in timelines %}
+                <td>{{ inputs.tax_rate|percentage }}</td>
+             {% endfor %}
+        </tr>
+
+        <tr>
+            <td>Profit Before Tax</td>
+            <td>$ 000s</td>
+            <td></td>
+            {% for profit_before_tax in profit_before_taxes %}
+                <td>{{ profit_before_tax.profit_before_tax|currency_format }}</td>
+             {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>Corporate Income Tax Expense</td>
+            <td>$ 000s</td>
+            <td>Corporate Income Tax Rate * Profit Before Tax</td>
+            {% for accounting_tax in accounting_taxes %}
+                <td>{{ accounting_tax.tax_expense|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        </table>
+
+    </div>
+
+</section>
+
+<h1>Cash Tax</h1>
+<section class="calculation-section">
+    <h1>Tax Depreciation</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Tax Depreciation Rate</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.tax_depreciation_rate|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Asset Value for Tax Balances BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for asset_value_for_tax_balances_beg in asset_value_for_tax_balances_begs %}
+                    <td>{{ asset_value_for_tax_balances_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Last Operating Period Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.last_operating_period_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Depreciation</td>
+                <td>$ 000s</td>
+                <td>If last Operating Period Flag = 1, Asset Value for tax balance BEG else, Asset value for tax balanace BEG * Tax Depreciation Rate</td>
+                {% for tax_depreciation in tax_depreciations %}
+                    <td>{{ tax_depreciation|currency_format }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Asset Value For Tax Balance</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Solar Asset Book Value</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.book_value|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Asset Value for Tax Balances BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for asset_value_for_tax_balances_beg in asset_value_for_tax_balances_begs %}
+                    <td>{{ asset_value_for_tax_balances_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Allowable CAPEX</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>0</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Depreciation</td>
+                <td>$ 000s</td>
+                <td>If last Operating Period Flag = 1, Asset Value for tax balance BEG else, Asset value for tax balanace BEG * Tax Depreciation Rate</td>
+                {% for tax_depreciation in tax_depreciations %}
+                    <td>{{ tax_depreciation|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Asset Value For Tax Balance</td>
+                <td>$ 000s</td>
+                <td>Asset Value For Tax Balance BEG + Allowable CAPEX - Tax Depreciation</td>
+                {% for cash_tax in cash_taxes  %}
+                    <td>{{ cash_tax.asset_value_for_tax_balance|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Interest Deduction For Tax</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Interest</td>
+                <td>$ 000s</td>
+                <td><a href="{% url 'quarterly_financial_statements_debt' scenario.id %}">Detail</a></td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>RCF Interest Due</td>
+                <td>$ 000s</td>
+                <td><a href="{% url 'quarterly_financial_statements_rcf' scenario.id %}">Detail</a></td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Allowable Interest Deductions</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>0</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Interest Deduction For Tax</td>
+                <td>$ 000s</td>
+                <td>Senior Debt Interest + RCF Interest Due + Allowable Interest Deductions</td>
+                {% for interest_deduction_for_tax in interest_deduction_for_taxes %}
+                    <td>{{ interest_deduction_for_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Taxable Income/(Tax Losses Arising)</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+            <td>EBITDA</td>
+            <td>$ 000s</td>
+            <td></td>
+            {% for ebitda in ebitdas %}
+                <td>{{ ebitda.ebitda|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+            <tr class="total-row">
+                <td>Tax Depreciation</td>
+                <td>$ 000s</td>
+                <td>If last Operating Period Flag = 1, Asset Value for tax balance BEG else, Asset value for tax balanace BEG * Tax Depreciation Rate</td>
+                {% for tax_depreciation in tax_depreciations %}
+                    <td>{{ tax_depreciation|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Interest Deduction For Tax</td>
+                <td>$ 000s</td>
+                <td>Senior Debt Interest + RCF Interest Due + Allowable Interest Deductions</td>
+                {% for interest_deduction_for_tax in interest_deduction_for_taxes %}
+                    <td>{{ interest_deduction_for_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income / (Tax Losses Arising)</td>
+                <td>$ 000s</td>
+                <td>EBITDA - Tax Depreciation - Interest Deduction For Tax</td>
+                {% for taxable_income_tax_losses_arising in taxable_income_tax_losses_arisings %}
+                    <td>{{ taxable_income_tax_losses_arising|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Taxable Income</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income / (Tax Losses Arising)</td>
+                <td>$ 000s</td>
+                <td>EBITDA - Tax Depreciation - Interest Deduction For Tax</td>
+                {% for taxable_income_tax_losses_arising in taxable_income_tax_losses_arisings %}
+                    <td>{{ taxable_income_tax_losses_arising|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income</td>
+                <td>$ 000s</td>
+                <td>Max of 0 and Taxable Income/(Tax Losses Arising) </td>
+                {% for taxable_income in taxable_incomes %}
+                    <td>{{ taxable_income|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Tax Losses Arising</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income / (Tax Losses Arising)</td>
+                <td>$ 000s</td>
+                <td>EBITDA - Tax Depreciation - Interest Deduction For Tax</td>
+                {% for taxable_income_tax_losses_arising in taxable_income_tax_losses_arisings %}
+                    <td>{{ taxable_income_tax_losses_arising|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Losses Arising</td>
+                <td>$ 000s</td>
+                <td>Min of 0 and Taxable Income/(Tax Losses Arising) </td>
+                {% for tax_losses_arising in tax_losses_arisings %}
+                    <td>{{ tax_losses_arising|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Tax Losses Utilised</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income</td>
+                <td>$ 000s</td>
+                <td>Max of 0 and Taxable Income/(Tax Losses Arising) </td>
+                {% for taxable_income in taxable_incomes %}
+                    <td>{{ taxable_income|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Tax Losses Carried Forward Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for tax_losses_carried_forward in tax_losses_carried_forwards %}
+                    <td>{{ tax_losses_carried_forward|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Losses Utilised</td>
+                <td>$ 000s</td>
+                <td>Min of Taxable Income and Tax Losses Carried Forward Balance BEG</td>
+                {% for tax_losses_utilised in tax_losses_utiliseds %}
+                    <td>{{ tax_losses_utilised|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Taxable Income Net of Tax Losses Utilised</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income</td>
+                <td>$ 000s</td>
+                <td>Max of 0 and Taxable Income/(Tax Losses Arising) </td>
+                {% for taxable_income in taxable_incomes %}
+                    <td>{{ taxable_income|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Losses Utilised</td>
+                <td>$ 000s</td>
+                <td>Min of Taxable Income and Tax Losses Carried Forward Balance BEG</td>
+                {% for tax_losses_utilised in tax_losses_utiliseds %}
+                    <td>{{ tax_losses_utilised|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income Net of Tax Losses Utilised</td>
+                <td>$ 000s</td>
+                <td>Taxable Income - Tax Losses Utilised</td>
+                {% for taxable_income_net_of_tax_losses_utilised in taxable_income_net_of_tax_losses_utiliseds %}
+                    <td>{{ taxable_income_net_of_tax_losses_utilised|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Corporate Income Tax Paid</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Corporate Income Tax Rate</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.tax_rate|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Taxable Income Net of Tax Losses Utilised</td>
+                <td>$ 000s</td>
+                <td>Taxable Income - Tax Losses Utilised</td>
+                {% for taxable_income_net_of_tax_losses_utilised in taxable_income_net_of_tax_losses_utiliseds %}
+                    <td>{{ taxable_income_net_of_tax_losses_utilised|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Corporate Income Tax Paid</td>
+                <td>$ 000s</td>
+                <td>Corporate Income Tax Rate * Taxable Income Net of Tax Losses Utilised</td>
+                {% for cash_tax in cash_taxes %}
+                    <td>{{ cash_tax.corporate_income_tax_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Tax Losses Carry Forward</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Tax Losses Carried Forward - Initial Balance</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.tax_losses_carried_forward_innit|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Tax Losses Carried Forward Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for tax_losses_carried_forward in tax_losses_carried_forwards %}
+                    <td>{{ tax_losses_carried_forward|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Losses Arising</td>
+                <td>$ 000s</td>
+                <td>Min of 0 and Taxable Income/(Tax Losses Arising) </td>
+                {% for tax_losses_arising in tax_losses_arisings_absolutes %}
+                    <td>{{ tax_losses_arising|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Losses Utilised</td>
+                <td>$ 000s</td>
+                <td>Min of Taxable Income and Tax Losses Carried Forward Balance BEG</td>
+                {% for tax_losses_utilised in tax_losses_utiliseds %}
+                    <td>{{ tax_losses_utilised|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Tax Losses Carried Forward Balance</td>
+                <td>$ 000s</td>
+                <td>Tax Losses Carried Forward Balance BEG + Tax Losses Arising - Tax Losses Utilised</td>
+                {% for cash_tax in cash_taxes %}
+                    <td>{{ cash_tax.tax_losses_carried_forward|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+        
+
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Deferred Tax</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Deferred Tax Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for deferred_tax_beg in deferred_tax_begs %}
+                    <td>{{ deferred_tax_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Corporate Income Tax Expense</td>
+                <td>$ 000s</td>
+                <td>Corporate Income Tax Rate * Profit Before Tax</td>
+                {% for accounting_tax in accounting_taxes %}
+                    <td>{{ accounting_tax.tax_expense|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Corporate Income Tax Paid</td>
+                <td>$ 000s</td>
+                <td>Corporate Income Tax Rate * Taxable Income Net of Tax Losses Utilised</td>
+                {% for cash_tax in cash_taxes %}
+                    <td>{{ cash_tax.corporate_income_tax_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Deferred Tax Balance</td>
+                <td>$ 000s</td>
+                <td>If financial Close Date Flag is 1, Deferred Tax - Initial Balance, else Deferred Tax Balance BEG + Corporate Income Tax Expense - Corporate Income Tax Paid</td>
+                {% for deferred_tax in deferred_taxes %}
+                    <td>{{ deferred_tax.deferred_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+ 
+{% endblock %}

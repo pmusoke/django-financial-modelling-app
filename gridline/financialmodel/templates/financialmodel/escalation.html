@@ -1,0 +1,128 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<h1>Escalation</h1>
+<section class="calculation-section">
+    <h1>Forecast CPI</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+
+            <tr>
+                <td>Expected CPI at close</td>
+                <td>Index</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.cpi_at_close }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Forecast CPI Growth Rate</td>
+                <td>% p.a.</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.cpi_growth_rate|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Number of periods in a year</td>
+                <td>periods</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>4</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Finance Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Forecast CPI</td>
+                <td>Index</td>
+                <td>Prior year Forecast CPI * (1+Forecast CPI Growth Rate)^(1/Number of periods in a year)</td>
+                {% for forecast_cpi in forecast_cpis %}
+                    <td>{{ forecast_cpi }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Escalation Factors</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>CPI at signature date</td>
+                <td>Index</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.cpi_sign_date }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Forecast CPI</td>
+                <td>Index</td>
+                <td>Prior year Forecast CPI * (1+Forecast CPI Growth Rate)^(1/Number of periods in a year)</td>
+                {% for forecast_cpi in forecast_cpis %}
+                    <td>{{ forecast_cpi }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Escalation Flag</td>
+                <td>flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.escalation_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Escalation Factor</td>
+                <td></td>
+                <td>If  prior month escalation flag = 1, (previous forecast CPI/CPI at signature date), else: previous month escalation factor</td>
+                {% for expense in expenses %}
+                    <td>{{ expense.escalation_factor }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+        </table>
+    </div>
+</section>
+
+    
+
+{% endblock %}

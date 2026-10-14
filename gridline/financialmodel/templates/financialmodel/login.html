@@ -1,0 +1,22 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+<div class="login-form-div">
+    <form action="{% url 'login_view' %}" class="login-form" method="post">
+        {% if message %}
+        <div class="message">
+            <p>{{ message }}</p>
+        </div>
+        {% endif %}
+
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Login">
+
+    </form>
+</div>
+
+{% endblock %}

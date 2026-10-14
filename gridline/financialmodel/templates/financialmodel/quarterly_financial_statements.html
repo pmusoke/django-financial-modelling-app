@@ -1,0 +1,435 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+{% if message %}
+<div>
+    <p>{{ message }}</p>
+</div>
+{% else %}
+<div class="project-block">
+    
+    <section class="financial-statement-section">
+        <h1>Statement of Comprehensive Income</h1>
+        <div class="financial-statement-div">
+            <table>          
+
+                <tr>
+                    <th>Line item</th>
+                    <th>Formula</th>
+                {% for timeline in timelines %}
+                    <th>{{ timeline.date }}</th>
+                {% endfor %}
+                </tr>
+                
+                <tr>
+                    <td>Revenue</td>
+                    <td><a href="{% url 'quarterly_financial_statements_revenue' scenario.id %}">Detail</a></td>
+                {% for revenue in revenues %}
+                    <td>{{ revenue.revenue|currency_format }}</td>
+                {% endfor %}
+                </tr>     
+                
+                <tr>
+                    <td>Expenses</td>
+                    <td><a href="{% url 'quarterly_financial_statements_expense' scenario.id %}">Detail</a></td>
+                {% for expense in expenses %}
+                    <td>{{ expense.expense|currency_format }}</td>
+                {% endfor %}
+                </tr>    
+
+                <tr class="total-row">
+                    <td>EBITDA</td>
+                    <td>Revenue - Expenses</td>
+                {% for ebitda in ebitdas %}
+                    <td>{{ ebitda.ebitda|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>Depreciation</td>
+                    <td><a href="{% url 'quarterly_financial_statements_depreciation' scenario.id %}">Detail</a></td>
+                {% for depreciation in depreciations %}
+                    <td>{{ depreciation.depreciation|currency_format }}</td>
+                {% endfor %}
+                </tr>  
+                
+                <tr class="total-row">
+                    <td>EBIT</td>
+                    <td>EBITDA - Depreciation</td>
+                    {% for ebit in ebits %}
+                        <td>{{ ebit.ebit|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Senior Debt Interest</td>
+                    <td><a href="{% url 'quarterly_financial_statements_debt' scenario.id %}">Detail</a></td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_interest|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>RCF Interest Due</td>
+                    <td><a href="{% url 'quarterly_financial_statements_rcf' scenario.id %}">Detail</a></td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_interest|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr class="total-row">
+                    <td>Profit Before Tax</td>
+                    <td>EBIT - Senior Debt Interest - RCF Interest Due</td>
+                    {% for profit_before_tax in profit_before_taxes %}
+                        <td>{{ profit_before_tax|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Corporate Income Tax Expense</td>
+                    <td><a href="{% url 'quarterly_financial_statements_tax' scenario.id %}">Detail</a></td>
+                {% for tax_expense in tax_expenses %}
+                    <td>{{ tax_expense|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr class="total-row">
+                    <td>Profit after tax</td>
+                    <td>Profit Before Tax - Corporate Income Tax Expense</td>
+                {% for profit_after_tax in profit_after_taxes %}
+                    <td>{{ profit_after_tax.profit_after_tax|currency_format }}</td>
+                {% endfor %}
+                </tr>  
+
+
+            </table>
+        </div>
+    </section>
+
+    <section class="financial-statement-section">
+        <h1>Statement of Cash Flows</h1>
+        <div class="financial-statement-div">
+            <table class="socf-table">
+                
+
+                <tr>
+                    <th>Line item</th>
+                    <th>Formula</th>
+                {% for timeline in timelines %}
+                    <th>{{ timeline.date }}</th>
+                {% endfor %}
+                </tr>
+                
+                <tr>
+                    <td>Cash received from invoices</td>
+                    <td><a href="{% url 'quarterly_financial_statements_revenue' scenario.id %}">Detail</a></td>
+                {% for revenue in revenues %}
+                    <td>{{ revenue.cash_received_from_invoices|currency_format }}</td>
+                {% endfor %}
+                </tr>     
+                
+                <tr>
+                    <td>Cash paid for Expenses</td>
+                    <td><a href="{% url 'quarterly_financial_statements_expense' scenario.id %}">Detail</a></td>
+                {% for expense in expenses %}
+                    <td>{{ expense.cash_paid_for_expense|currency_format }}</td>
+                {% endfor %}
+                </tr>    
+
+                <tr>
+                    <td>Corporate Income Tax Paid</td>
+                    <td><a href="{% url 'quarterly_financial_statements_tax' scenario.id %}">Detail</a></td>
+                {% for cash_tax in cash_taxes %}
+                    <td>{{ cash_tax.corporate_income_tax_paid|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr class="total-row">
+                    <td>Cash flow available for senior debts</td>
+                    <td>Cash Received From Invoices - Cash Paid For Expenses - Corporate Income Tax</td>
+                {% for cash_flow_available_for_senior_debt in cash_flow_available_for_senior_debts %}
+                    <td>{{ cash_flow_available_for_senior_debt.cash_flow_available_for_senior_debt|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>Senior Debt Interest</td>
+                    <td><a href="{% url 'quarterly_financial_statements_debt' scenario.id %}">Detail</a></td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_interest|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>Senior Debt Principal Repayment</td>
+                    <td><a href="{% url 'quarterly_financial_statements_debt' scenario.id %}">Detail</a></td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_repayment|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+
+                <tr class="total-row">
+                    <td>Cash flow available for Refinancing facility</td>
+                    <td>Cash Flow Available For Senior Debts - Senior Debt Interest - Senior Debt Principal Repayment</td>
+                {% for cash_flow_available_for_refinancing_facility in cash_flow_available_for_refinancing_facilities %}
+                    <td>{{ cash_flow_available_for_refinancing_facility.cash_flow_available_for_refinancing_facility|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>RCF Drawdown</td>
+                    <td><a href="{% url 'quarterly_financial_statements_rcf' scenario.id %}">Detail</a></td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_drawdown|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>RCF Interest Paid</td>
+                    <td><a href="{% url 'quarterly_financial_statements_rcf' scenario.id %}">Detail</a></td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_interest_paid|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+
+                <tr>
+                    <td>RCF Principal Repayment</td>
+                    <td><a href="{% url 'quarterly_financial_statements_rcf' scenario.id %}">Detail</a></td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_principal_repayment|currency_format }}</td>
+                {% endfor %}
+                </tr>    
+
+                <tr class="total-row">
+                    <td>Cash available for shareholders</td>
+                    <td>Cash Flow Available For Refinancing Facility + RCF Drawdown - RCF Interest Paid - RCF Principal Repayment</td>
+                {% for cash_flow_available_for_shareholder in cash_flow_available_for_shareholders %}
+                    <td>{{ cash_flow_available_for_shareholder.cash_flow_available_for_shareholders|currency_format }}</td>
+                {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>Share Capital Redemption</td>
+                    <td><a href="{% url 'quarterly_financial_statements_equity' scenario.id  %}">Detail</a></td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital_redemption|currency_format }}</td>
+                {% endfor %}
+                </tr>  
+
+                <tr class="total-row">
+                    <td>Cash available for dividends</td>
+                    <td><a href="{% url 'quarterly_financial_statements_equity' scenario.id  %}">Detail</a></td>
+                    
+                {% for cash_flow_available_for_dividend in cash_flow_available_for_dividends %}
+                    <td>{{ cash_flow_available_for_dividend.cash_flow_available_for_dividends|currency_format }}</td>
+                {% endfor %}
+                </tr>  
+
+
+            </table>
+        </div>
+    </section>
+
+    <section class="financial-statement-section">
+        <h1>Statement of Financial Position</h1>
+        <div class="financial-statement-div">
+            <table>
+                
+
+                <tr>
+                    <th>Line item</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Solar Asset Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_depreciation' scenario.id %}">Detail</a></td>
+                    {% for depreciation in depreciations %}
+                        <td>{{ depreciation.solar_asset_value|currency_format }}</td>
+                    {% endfor %}
+                </tr>  
+
+                <tr class="total-row">
+                    <td>Non Current Assets</td>
+                    <td></td>
+                    {% for depreciation in depreciations %}
+                        <td>{{ depreciation.solar_asset_value|currency_format }}</td>
+                    {% endfor %}
+                </tr>  
+
+                <tr>
+                    <td>blank row</td>
+                </tr>
+
+                <tr>
+                    <td>Retained Cash Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_equity' scenario.id  %}">Detail</a></td>
+                    {% for retained_earning in retained_earnings %}
+                        <td>{{ retained_earning.retained_cash|currency_format }}</td>
+                    {% endfor %}
+                </tr>  
+
+                <tr>
+                    <td>Accounts Receivable Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_revenue' scenario.id %}">Detail</a></td>
+                    {% for revenue in revenues %}
+                        <td>{{ revenue.accounts_receivable|currency_format }}</td>
+                    {% endfor %}
+                </tr>  
+
+                <tr class="total-row">
+                    <td>Current Assets</td>
+                    <td>Retained Cash Balance + Accounts Receivable Balance</td>
+                    {% for current_asset in current_assets %}
+                        <td>{{ current_asset|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>blank row</td>
+                </tr>
+
+                <tr class="total-row">
+                    <td>Total Assets</td>
+                    <td>Current Assets + Non Current Assets</td>
+                    {% for total_asset in total_assets %}
+                        <td>{{ total_asset|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>blank row</td>
+                </tr>
+
+                <tr>
+                    <td>Accounts Payable Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_expense' scenario.id %}">Detail</a></td>
+                    {% for expense in expenses %}
+                        <td>{{ expense.accounts_payable|currency_format }}</td>
+                    {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>Senior Debt Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_debt' scenario.id %}">Detail</a></td>
+                    {% for debt in debts %}
+                        <td>{{ debt.senior_debt|currency_format }}</td>
+                    {% endfor %}
+                </tr>   
+
+                <tr>
+                    <td>RCF Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_rcf' scenario.id %}">Detail</a></td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_balance|currency_format }}</td>
+                {% endfor %}
+                </tr>  
+
+                <tr>
+                    <td>Deferred Tax Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_tax' scenario.id %}">Detail</a></td>
+                {% for deferred_tax in deferred_taxes %}
+                    <td>{{ deferred_tax.deferred_tax|currency_format }}</td>
+                {% endfor %}
+                </tr>  
+
+                <tr>
+                    <td>Share Capital Redemption</td>
+                    <td><a href="{% url 'quarterly_financial_statements_equity' scenario.id  %}">Detail</a></td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital|currency_format }}</td>
+                {% endfor %}
+                </tr> 
+
+                <tr>
+                    <td>Retained Earnings Balance</td>
+                    <td><a href="{% url 'quarterly_financial_statements_equity' scenario.id  %}">Detail</a></td>
+                    {% for retained_earning in retained_earnings %}
+                        <td>{{ retained_earning.retained_earnings|currency_format }}</td>
+                    {% endfor %}
+                </tr>  
+
+                <tr class="total-row">
+                    <td>Total Liabilities + Equity</td>
+                    <td></td>
+                    {% for total_liability in total_liabilities %}
+                        <td>{{ total_liability|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+
+
+
+
+            </table>
+        </div>
+    </section>
+
+    <section class="financial-statement-section">
+        <h1>BALANCE SHEET CHECK</h1>
+        <div class="financial-statement-div">
+            <table>
+                
+
+                <tr>
+                    <th>Line item</th>
+                    <th>Formula</th>
+                {% for timeline in timelines %}
+                    <th>{{ timeline.date }}</th>
+                {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Total Assets</td>
+                    <td>Current Assets + Non Current Assets</td>
+                    {% for total_asset in total_assets %}
+                        <td>{{ total_asset|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Total Liabilities + Equity</td>
+                    <td></td>
+                    {% for total_liability in total_liabilities %}
+                        <td>{{ total_liability|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Check</td>
+                    <td>Total Assets - Total Liabilities - Equity</td>
+                    {% for difference in differences %}
+                        <td>{{ difference|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Status</td>
+                    <td></td>
+                    {% for status in statuses %}
+                        <td class="{{ status  }}">{{ status }}</td>
+                    {% endfor %}
+                </tr>
+
+
+
+
+
+                
+            </table>
+        </div>
+    </section>
+
+</div>
+{% endif %}
+
+{% endblock %}

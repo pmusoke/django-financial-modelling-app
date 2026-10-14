@@ -1,0 +1,411 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<h1>Revolving Credit Facility</h1>
+<section class="calculation-section">
+    <h1>Cash available for RCF</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+            <td>Retained Cash Balance BEG</td>
+            <td>$ 000s</td>
+            <td></td>
+            {% for retained_cash_balance_beg in retained_cash_balance_begs %}
+                <td>{{ retained_cash_balance_beg|currency_format }}</td>
+             {% endfor %}
+        </tr>
+
+        <tr>
+            <td>Cash Flow Available for Revolving Credit Facility</td>
+            <td>$ 000s</td>
+            <td></td>
+            {% for cash_flow_available_for_rcf in cash_flow_available_for_rcfs %}
+                <td>{{ cash_flow_available_for_rcf.cash_flow_available_for_rcf|currency_format }}</td>
+             {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>Cash Available for RCF / (Cash shortfall for RCF)</td>
+            <td>$ 000s</td>
+            <td>Retained Cash Balance BEG + Cash Flow Available For Revolving Credit Facility</td>
+            {% for cash_available_for_rcf_cash_shortfall_for_rcf in cash_available_for_rcf_cash_shortfall_for_rcfs %}
+                <td>{{ cash_available_for_rcf_cash_shortfall_for_rcf|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>Cash Available for RCF</td>
+            <td>$ 000s</td>
+            <td>Max of 0 or Cash Available for RCF / (Cash shortfall for RCF)</td>
+            {% for cash_available_for_rcf in cash_available_for_rcfs %}
+                <td>{{ cash_available_for_rcf|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>RCF Drawdown</td>
+            <td>$ 000s</td>
+            <td>Min of 0 or Cash Available for RCF / (Cash shortfall for RCF)</td>
+            {% for rcf in rcfs %}
+                <td>{{ rcf.rcf_drawdown|currency_format }}</td>
+            {% endfor %}
+        </tr>
+        </table>
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>RCF Interest Due</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+
+            <tr>
+                <td>RCF Annual Interest Rate</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.rcf_interest_rate|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+        <tr>
+            <td>Senior Debt Day Count Convention</td>
+            <td>days</td>
+            <td></td>
+            {% for timeline in timelines %}
+                <td>{{ inputs.senior_debt_day_convention }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <td>Days in period</td>
+            <td>days</td>
+            <td></td>
+            {% for timeline in timelines %}
+                <td>{{ timeline.days_in_period }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>RCF Period Interest Rate</td>
+            <td>%</td>
+            <td>RCF Annual Interest Rate * (Days in period / Senior Debt Day Count Convention)</td>
+            {% for rcf_period_interest in rcf_period_interests %}
+                <td>{{ rcf_period_interest|percentage }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <td>RCF Balance BEG</td>
+            <td>$ 000s</td>
+            <td></td>
+            {% for rcf_balance_beg in rcf_balance_begs %}
+                <td>{{ rcf_balance_beg|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>RCF Interest Due</td>
+            <td>$ 000s</td>
+            <td>RCF Balance BEG * RCF Period Interest Rate</td>
+            {% for rcf in rcfs %}
+                <td>{{ rcf.rcf_interest|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>RCF Interest Paid</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Available for RCF</td>
+                <td>$ 000s</td>
+                <td>Max of 0 or Cash Available for RCF / (Cash shortfall for RCF)</td>
+                {% for cash_available_for_rcf in cash_available_for_rcfs %}
+                    <td>{{ cash_available_for_rcf|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Interest Due</td>
+                <td>$ 000s</td>
+                <td>RCF Balance BEG * RCF Period Interest Rate</td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Interest Paid</td>
+                <td>$ 000s</td>
+                <td>Min of Cash Available for RCF and RCF Interest Due</td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_interest_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+
+    </div>
+    
+</section>
+
+<section class="calculation-section">
+    <h1>RCF Unpaid Interest</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Interest Due</td>
+                <td>$ 000s</td>
+                <td>RCF Balance BEG * RCF Period Interest Rate</td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        <tr class="total-row">
+            <td>RCF Interest Paid</td>
+            <td>$ 000s</td>
+            <td>Min of Cash Available for RCF and RCF Interest Due</td>
+            {% for rcf in rcfs %}
+                <td>{{ rcf.rcf_interest_paid|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>RCF Unpaid Interest</td>
+            <td>$ 000s</td>
+            <td>RCF Interest Due - RCF Interest Paid</td>
+            {% for rcf_unpaid_interest in rcf_unpaid_interests %}
+                <td>{{ rcf_unpaid_interest|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+
+
+        </table>
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Cash available for RCF principal repayment</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Available for RCF</td>
+                <td>$ 000s</td>
+                <td>Max of 0 or Cash Available for RCF / (Cash shortfall for RCF)</td>
+                {% for cash_available_for_rcf in cash_available_for_rcfs %}
+                    <td>{{ cash_available_for_rcf|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Interest Paid</td>
+                <td>$ 000s</td>
+                <td>Min of Cash Available for RCF and RCF Interest Due</td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_interest_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Available for RCF Principal Repayment</td>
+                <td>$ 000s</td>
+                <td>Cash Available for RCF - RCF Interest Paid</td>
+                {% for cash_available_for_rcf_principal_repayment in cash_available_for_rcf_principal_repayments %}
+                    <td>{{ cash_available_for_rcf_principal_repayment|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>RCF principal repayment</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+        <tr class="total-row">
+            <td>Cash Available for RCF Principal Repayment</td>
+            <td>$ 000s</td>
+            <td>Cash Available for RCF - RCF Interest Paid</td>
+            {% for cash_available_for_rcf_principal_repayment in cash_available_for_rcf_principal_repayments %}
+                <td>{{ cash_available_for_rcf_principal_repayment|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr>
+            <td>RCF Balance BEG</td>
+            <td>$ 000s</td>
+            <td></td>
+            {% for rcf_balance_beg in rcf_balance_begs %}
+                <td>{{ rcf_balance_beg|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        <tr class="total-row">
+            <td>RCF Principal Repayment</td>
+            <td>$ 000s</td>
+            <td>Min of Cash Available for RCF Principal Repayment and RCF Balance BEG</td>
+            {% for rcf in rcfs %}
+                <td>{{ rcf.rcf_principal_repayment|currency_format }}</td>
+            {% endfor %}
+        </tr>
+
+        </table>
+
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>RCF Balance</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>RCF Initial Balance</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.rcf_innit|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>RCF Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for rcf_balance_beg in rcf_balance_begs %}
+                    <td>{{ rcf_balance_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Drawdown</td>
+                <td>$ 000s</td>
+                <td>Min of 0 or Cash Available for RCF / (Cash shortfall for RCF)</td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_drawdown|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Unpaid Interest</td>
+                <td>$ 000s</td>
+                <td>RCF Interest Due - RCF Interest Paid</td>
+                {% for rcf_unpaid_interest in rcf_unpaid_interests %}
+                    <td>{{ rcf_unpaid_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Principal Repayment</td>
+                <td>$ 000s</td>
+                <td>Min of Cash Available for RCF Principal Repayment and RCF Balance BEG</td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_principal_repayment|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>RCF Balance</td>
+                <td>$ 000s</td>
+                <td>Initial Balance if financial close date flag is 1, else, RCF Balance BEG + RCF Drawdown + RCF Unpaid Interest - RCF Principal Repayment</td>
+                {% for rcf in rcfs %}
+                    <td>{{ rcf.rcf_balance|currency_format }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </div>
+</section>
+
+
+
+{% endblock %}

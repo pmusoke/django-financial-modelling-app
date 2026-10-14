@@ -1,0 +1,83 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<section class="calculation-section">
+    <h1>Internal Rate Of Return</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Dividends Paid</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.dividends_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Capital Redemption</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital_redemption|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Capital Issued</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for share_capital_issued in share_capital_issueds %}
+                    <td>{{ share_capital_issued|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Flows</td>
+                <td>$ 000s</td>
+                <td>Dividends Paid + Share Capital Redemption - Share Capital Issued</td>
+                {% for cash_flow in cash_flows %}
+                    <td>{{ cash_flow|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+        
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Blended Equity IRR</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <td>Blended Equity IRR</td>
+                <td>{{ metrics.irr|percentage }}</td>
+            </tr>
+        </table>
+    </div>
+</section>
+
+
+
+
+
+
+{% endblock %}

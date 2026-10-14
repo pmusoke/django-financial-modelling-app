@@ -1,0 +1,122 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<section class="calculation-section">
+    <h1>Senior Debt Service</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Principal Repayment</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_repayment|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Interest</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for debt in debts %}
+                    <td>{{ debt.senior_debt_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Service</td>
+                <td>$ 000s</td>
+                <td>Senior Debt Principal Repayment + Senior Debt Interest</td>
+                {% for senior_debt_service in senior_debt_services %}
+                    <td>{{ senior_debt_service|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Senior Debt Service Coverage Ratio</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Cash Flow Available For Senior Debt Service</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for cash_flow_available_for_senior_debt in cash_flow_available_for_senior_debts %}
+                    <td>{{ cash_flow_available_for_senior_debt.cash_flow_available_for_senior_debt|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Service</td>
+                <td>$ 000s</td>
+                <td>Senior Debt Principal Repayment + Senior Debt Interest</td>
+                {% for senior_debt_service in senior_debt_services %}
+                    <td>{{ senior_debt_service|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Senior Debt Service Coverage Ratio</td>
+                <td>ratio</td>
+                <td>Cash Flow Available For Senior Debt Service / Senior Debt Service</td>
+                {% for ratio in senior_debt_service_coverage_ratio_array %}
+                    <td>{{ ratio|ratio_format }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </div>
+</section>
+
+<section>
+    <h1>Metrics</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <td>MIN DSCR</td>
+                <td>Ratio</td>
+                <td>Min of Senior Debt Service Coverage Ratio</td>
+                <td>{{ metrics.min_dscr|ratio_format }}</td>
+            </tr>
+
+            <tr>
+                <td>Average DSCR</td>
+                <td>Ratio</td>
+                <td>Average of Senior Debt Service Coverage Ratio</td>
+                <td>{{ metrics.avg_dscr|ratio_format }}</td>
+            </tr>
+
+        </table>
+
+        
+
+    </div>
+</section>
+
+{% endblock %}

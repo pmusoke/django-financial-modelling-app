@@ -1,0 +1,31 @@
+# Python virtual enviornments
+
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local database
+db.sqlite3
+
+# Environment variables and secrets
+.env
+.env.*
+
+# macOS
+.DS_Store
+
+# Editor settings
+.vscode/
+
+# Archived HTML templates
+*archive.html
+*archives.html
+
+# Backup Python files
+backup.py
+draft.py
+redesign.py

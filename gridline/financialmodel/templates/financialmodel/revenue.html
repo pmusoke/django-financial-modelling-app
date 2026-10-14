@@ -1,0 +1,429 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+    <h1>Revenue Calculation</h1>
+
+    <section class="calculation-section">
+        <h1>Compound Degredation</h1>
+        <div class="calculation-div">
+            <table>
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Annual Degredation</td>
+                    <td>%</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.annual_degredation|percentage }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Contract Year Number</td>
+                    <td>counter</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.contract_year_number }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Operating Period Flag</td>
+                    <td>flag</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.operating_period_flag }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Compound Degredation</td>
+                    <td>%</td>
+                    <td>1/((1+annual degredation) ** (contract yearnumber - 1))</td>
+                    {% for compound_degredation in compound_degredations %}
+                        <td>{{ compound_degredation|percentage }}</td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <section class="calculation-section">
+        <h1>Seasonality Adjustment</h1>
+        <div class="calculation-div">
+            <table>
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Period Number</td>
+                    <td>Counter</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.period_number }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Operating Period Flag</td>
+                    <td>flag</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.operating_period_flag }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Seasonality Adjustment</td>
+                    <td>%</td>
+                    <td></td>
+                    {% for seasonal_adjustment in seasonal_adjustments %}
+                        <td>{{ seasonal_adjustment|percentage }}</td>
+                    {% endfor %}
+                </tr>
+
+            </table>
+        </div>
+    </section>
+
+    <section class="calculation-section">
+        <h1>Electricity Generation</h1>
+        <div class="calculation-div">
+            <table>
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Year 1 P50 production</td>
+                    <td>GWh</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.year_1_p50_production }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Availability</td>
+                    <td>%</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.availability|percentage }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Compound Degredation</td>
+                    <td>%</td>
+                    <td>1/((1+annual degredation) ** (contract yearnumber - 1))</td>
+                    {% for compound_degredation in compound_degredations %}
+                        <td>{{ compound_degredation|percentage }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Seasonality Adjustment</td>
+                    <td>%</td>
+                    <td></td>
+                    {% for seasonal_adjustment in seasonal_adjustments %}
+                        <td>{{ seasonal_adjustment|percentage }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Electricity Generation</td>
+                    <td>GWh</td>
+                    <td>Year 1 P50 Production * Availability * Compound Degredation * Seasonality Adjustment</td>
+                    {% for electricity_generation in electricity_generations %}
+                        <td>{{ electricity_generation|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+            </table>
+        </div>
+
+    </section>
+
+    <section class="calculation-section">
+        <h1>Electricity Generation Revenue</h1>
+        <div class="calculation-div">
+            <table>
+
+            <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Power Tarrif</td>
+                <td>USD/kWh</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.power_tarrif }}</td>
+                {% endfor %}
+                
+            </tr>
+
+            <tr>
+                <td>Units in a Thousand</td>
+                <td>Units</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ 1000 }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>GWh to KWh Conversion</td>
+                <td>KWh/GWh</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ 1000000 }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                    <td>Electricity Generation</td>
+                    <td>GWh</td>
+                    <td>Year 1 P50 Production * Availability * Compound Degredation * Seasonality Adjustment</td>
+                    {% for electricity_generation in electricity_generations %}
+                        <td>{{ electricity_generation|currency_format }}</td>
+                    {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Operating Period Flag</td>
+                <td>flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.operating_period_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Electricity Generation Revenue</td>
+                <td>$ 000s</td>
+                <td>(Power Tarrif/Units in a thousand) * GWh to Kwh conversion * Electricity Generation * Operating Period Flag </td>
+                {% for revenue in revenues %}
+                    <td>{{ revenue.revenue|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+            </table>
+        </div>
+    </section>
+
+    <h1>Accounts Receivable</h1>
+    <section class="calculation-section">
+        <h1>Forecast Accounts Receivable Balance</h1>
+        <div class="calculation-div">
+            <table>
+
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Accounts Receivable Days</td>
+                    <td>Days</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.accounts_receivable_days }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Days In Period</td>
+                    <td>Days</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.days_in_period }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Electricity Generation Revenue</td>
+                    <td>$ 000s</td>
+                    <td>(Power Tarrif/Units in a thousand) * GWh to Kwh conversion * Electricity Generation * Operating Period Flag </td>
+                    {% for revenue in revenues %}
+                        <td>{{ revenue.revenue|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Forecast Accounts Receivable Balance</td>
+                    <td>$ 000s</td>
+                    <td>Electricty Generation Revenue * (Accounts Receivable Days/Days In Period)</td>
+                    {% for forecast_accounts_receivable_balance in forecast_accounts_receivable_balances %}
+                        <td>{{ forecast_accounts_receivable_balance|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+            </table>
+        </div>
+    </section>
+
+    <section class="calculation-section">
+        <h1>Cash Received From Invoices</h1>
+        <div class="calculation-div">
+            <table>
+                 <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Accounts Receivable Balance BEG</td>
+                    <td>$ 000s</td>
+                    <td></td>
+                    {% for accounts_receivable_balance_beg in accounts_receivable_balance_begs %}
+                        <td>{{ accounts_receivable_balance_beg|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Electricity Generation Revenue</td>
+                    <td>$ 000s</td>
+                    <td>(Power Tarrif/Units in a thousand) * GWh to Kwh conversion * Electricity Generation * Operating Period Flag </td>
+                    {% for revenue in revenues %}
+                        <td>{{ revenue.revenue|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Forecast Accounts Receivable Balance</td>
+                    <td>$ 000s</td>
+                    <td>Electricty Generation Revenue * (Accounts Receivable Days/Days In Period)</td>
+                    {% for forecast_accounts_receivable_balance in forecast_accounts_receivable_balances %}
+                        <td>{{ forecast_accounts_receivable_balance|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Cash Received From Invoices</td>
+                    <td>$ 000s</td>
+                    <td>Accounts Receivable Balance BEG + Electricity Generation Revenue - Forecast Accounts Receivable Balance</td>
+                    {% for revenue in revenues %}
+                        <td>{{ revenue.cash_received_from_invoices|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+            </table>
+
+        </div>
+    </section>
+
+    <section class="calculation-section">
+        <h1>Accounts Receivable Balance</h1>
+        <div class="calculation-div">
+            <table>
+
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                </tr>
+
+                
+                <tr>
+                    <td>Accounts Receivable - Initial Balance</td>
+                    <td>$ 000s</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.accounts_recievable_innit|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Finacial Close Date Flag</td>
+                    <td>Flag</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.finance_close_flag }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Accounts Receivable Balance BEG</td>
+                    <td>$ 000s</td>
+                    <td></td>
+                    {% for accounts_receivable_balance_beg in accounts_receivable_balance_begs %}
+                        <td>{{ accounts_receivable_balance_beg|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Electricity Generation Revenue</td>
+                    <td>$ 000s</td>
+                    <td>(Power Tarrif/Units in a thousand) * GWh to Kwh conversion * Electricity Generation * Operating Period Flag </td>
+                    {% for revenue in revenues %}
+                        <td>{{ revenue.revenue|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Cash Received From Invoices</td>
+                    <td>$ 000s</td>
+                    <td>Accounts Receivable Balance BEG + Electricity Generation Revenue - Forecast Accounts Receivable Balance</td>
+                    {% for revenue in revenues %}
+                        <td>{{ revenue.cash_received_from_invoices|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Accounts Receivable Balance</td>
+                    <td>$ 000s</td>
+                    <td>Accounts Receivable Balance BEG + Electricity Generation Revenue - Cash Received From Invoices</td>
+                    {% for revenue in revenues %}
+                        <td>{{ revenue.accounts_receivable|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+            </table>
+
+        </div>
+    </section>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,466 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+<h1>Equity</h1>
+<section class="calculation-section">
+    <h1>Share Capital Drawdown</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Solar Asset Book Value</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.book_value|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Gearing</td>
+                <td>%</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.senior_debt_gearing|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Share Capital Drawdown</td>
+                <td>$ 000s</td>
+                <td>Solar Asset Book Value * (1 - Senior Debt Gearing)</td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Share Capital Redemption</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+
+            <tr>
+                <td>Share Capital Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for share_capital_balance_beg in share_capital_balance_begs %}
+                    <td>{{ share_capital_balance_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Last Operating Period Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.last_operating_period_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Share Capital Redemption</td>
+                <td>$ 000s</td>
+                <td>If Last Operating Period Flag = 1, Share Capital Balance BEG</td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital_redemption|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Share Capital Balance</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Capital Drawdown</td>
+                <td>$ 000s</td>
+                <td>Solar Asset Book Value * (1 - Senior Debt Gearing)</td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+            <tr>
+                <td>Share Capital Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for share_capital_balance_beg in share_capital_balance_begs %}
+                    <td>{{ share_capital_balance_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Additional Share Capital</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for share_capital_balance_beg in share_capital_balance_begs %}
+                    <td>0</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Capital Redemption</td>
+                <td>$ 000s</td>
+                <td>If Last Operating Period Flag = 1, Share Capital Balance BEG</td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital_redemption|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Share Capital</td>
+                <td>$ 000s</td>
+                <td>If Financial Close Date Flag = 1, Share Capital Drawdown</td>
+                {% for share_capital in share_capitals %}
+                    <td>{{ share_capital.share_capital|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            
+
+
+        </table>
+
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Retained Earnings</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Retained Earnings - Initial Balance</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.retained_earnings_innit|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Retained Earnings Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for retained_earnings_beg in retained_earnings_begs %}
+                    <td>{{ retained_earnings_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Profit After Tax</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for profit_after_tax in profit_after_taxes %}
+                    <td>{{ profit_after_tax.profit_after_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Dividends Paid</td>
+                <td>$ 000s</td>
+                <td>Min of Earnings Available For Dividend and Cash Available For Dividends</td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.dividends_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Retained Earnings</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.retained_earnings|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+        </table>
+    </div>
+
+</section>
+
+<section class="calculation-section">
+    <h1>Retained Cash</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Retained Cash - Initial Balance</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ inputs.retained_cash_innit|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Financial Close Date Flag</td>
+                <td>Flag</td>
+                <td></td>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.finance_close_flag }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Retained Cash Balance BEG</td>
+                <td></td>
+                <td></td>
+                {% for retained_cash_balance_beg in retained_cash_balance_begs %}
+                    <td>{{ retained_cash_balance_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Cash Flow Available For Dividends</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for cash_flow_available_for_dividend in cash_flow_available_for_dividends %}
+                    <td>{{ cash_flow_available_for_dividend.cash_flow_available_for_dividends|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Dividends Paid</td>
+                <td>$ 000s</td>
+                <td>Min of Earnings Available For Dividend and Cash Available For Dividends</td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.dividends_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Retained Cash Balance</td>
+                <td>$ 000s</td>
+                <td>Retained Cash Balance BEG + Cash Flow Available For Dividends - Dividends Pai</td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.retained_cash|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Earnings Available For Dividends</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Retained Earnings Balance BEG</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for retained_earnings_beg in retained_earnings_begs %}
+                    <td>{{ retained_earnings_beg|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Profit After Tax</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for profit_after_tax in profit_after_taxes %}
+                    <td>{{ profit_after_tax.profit_after_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Earnings Available for Dividend</td>
+                <td>$ 000s</td>
+                <td>Retained Earnings Balance BEG + Profit After Tax</td>
+                {% for earnings_available_for_dividend in earnings_available_for_dividends %}
+                    <td>{{ earnings_available_for_dividend|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            
+
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Cash Available For Dividends</h1>
+    <div class="calculation-div">
+        <table>
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+
+            <tr class="total-row">
+                <td>Retained Cash Balance</td>
+                <td>$ 000s</td>
+                <td>Retained Cash Balance BEG + Cash Flow Available For Dividends - Dividends Pai</td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.retained_cash|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Cash Flow Available For Dividends</td>
+                <td>$ 000s</td>
+                <td></td>
+                {% for cash_flow_available_for_dividend in cash_flow_available_for_dividends %}
+                    <td>{{ cash_flow_available_for_dividend.cash_flow_available_for_dividends|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Available For Dividends</td>
+                <td>$ 000s</td>
+                <td>Retained Cash Balance BEG + Cash Flow Available For Dividends</td>
+                {% for cash_available_for_dividend in cash_available_for_dividends %}
+                    <td>{{ cash_available_for_dividend|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+        </table>
+    </div>
+</section>
+
+<section class="calculation-section">
+    <h1>Dividends Paid</h1>
+    <div class="calculation-div">
+        <table>
+
+            <tr>
+                <th>Line item</th>
+                <th>Unit</th>
+                <th>Formula</th>
+            {% for timeline in timelines %}
+                <th>{{ timeline.date }}</th>
+            {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Earnings Available for Dividend</td>
+                <td>$ 000s</td>
+                <td>Retained Earnings Balance BEG + Profit After Tax</td>
+                {% for earnings_available_for_dividend in earnings_available_for_dividends %}
+                    <td>{{ earnings_available_for_dividend|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Available For Dividends</td>
+                <td>$ 000s</td>
+                <td>Retained Cash Balance BEG + Cash Flow Available For Dividends</td>
+                {% for cash_available_for_dividend in cash_available_for_dividends %}
+                    <td>{{ cash_available_for_dividend|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Dividends Paid</td>
+                <td>$ 000s</td>
+                <td>Min of Earnings Available For Dividend and Cash Available For Dividends</td>
+                {% for retained_earnings in retained_earningss %}
+                    <td>{{ retained_earnings.dividends_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+        </table>
+    </div>
+</section>
+
+    
+
+{% endblock %}

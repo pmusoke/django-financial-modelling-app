@@ -1,0 +1,25 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+
+<div class="create-scenario-form-div">
+    <form action="{% url 'createproject' %}" class="scenario-form" method="post">
+        {% csrf_token %}
+
+        <h2>Scenario Details</h2>
+
+        <div class="form-field">
+            {{  form.name.label_tag  }}
+            {{  form.name  }}
+        </div>
+
+
+        <input class="create-scenario-button" type="submit" value="Create Project">
+
+    </form>
+</div>
+
+{% endblock %}

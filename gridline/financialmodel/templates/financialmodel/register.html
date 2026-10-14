@@ -1,0 +1,14 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+
+{% block body %}
+
+<form action="{% url 'register' %}" class="register-form" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Login">
+
+</form>
+
+{% endblock %}

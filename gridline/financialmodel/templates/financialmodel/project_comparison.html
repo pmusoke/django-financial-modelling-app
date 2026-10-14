@@ -1,0 +1,313 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+{% if message %}
+<div>
+    <p>{{ message }}</p>
+</div>
+{% else %}
+
+
+<section class="financial-statement-section">
+    <h1>Metrics</h1>
+    <div class="financial-statement-div">
+        <table>
+            <tr>
+                <th>Metrics</th>
+                <th>Unit</th>
+                {% for scenario in scenarios %}
+                    <th>{{ scenario.scenario_name }}</th>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Blended Equity IRR</td>        
+                <td>%</td>
+                {% for metric in metrics %}
+                    <td>{{ metric.irr|percentage }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Min DSCR</td>
+                <td>ratio</td>
+                {% for metric in metrics %}
+                    <td>{{ metric.min_dscr|ratio_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Avg DSCR</td>
+                <td>ratio</td>
+                {% for metric in metrics %}
+                    <td>{{ metric.avg_dscr|ratio_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Investment Premium</td>
+                <td>$ 000s</td>
+                {% for metric in metrics %}
+                    <td>{{ metric.investment_premium|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+
+
+        </table>
+    </div>
+
+</section>
+
+<section class="financial-statement-section">
+    <h1>PROFIT AND LOSS</h1>
+    <div class="financial-statement-div">
+        <table>
+            <tr>
+                <th>Line Item</th>
+                <th>Unit</th>
+                {% for scenario in scenarios %}
+                    <th>{{ scenario.scenario_name }}</th>
+                {% endfor %}
+                
+            </tr>
+
+            <tr>
+                <td>Revenue</td>
+                <td>$ 000s</td>
+                {% for revenue in revenues %}
+                    <td>{{ revenue|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Expenses</td>
+                <td>$ 000s</td>
+                {% for expense in expenses %}
+                    <td>{{ expense|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Ebitda</td>
+                <td>$ 000s</td>
+                {% for ebitda in ebitdas %}
+                    <td>{{ ebitda|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>blank</td>
+            </tr>
+
+            <tr>
+                <td>Depreciation</td>
+                <td>$ 000s</td>
+                {% for depreciation in depreciations %}
+                    <td>{{ depreciation|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Ebit</td>
+                <td>$ 000s</td>
+                {% for ebit in ebits %}
+                    <td>{{ ebit|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>blank</td>
+            </tr>
+
+            <tr>
+                <td>Senior Debt Interest</td>
+                <td>$ 000s</td>
+                {% for senior_debt_interest in senior_debt_interests %}
+                    <td>{{ senior_debt_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>RCF Interest</td>
+                <td>$ 000s</td>
+                {% for rcf_interest in rcf_interests %}
+                    <td>{{ rcf_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Profit Before Tax</td>
+                <td>$ 000s</td>
+                {% for profit_before_tax in profit_before_taxes %}
+                    <td>{{ profit_before_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>blank row</td>
+            </tr>
+
+            <tr>
+                <td>Corporate Income Tax Expense</td>
+                <td>$ 000s</td>
+                {% for corporate_income_tax in corporate_income_taxes %}
+                    <td>{{ corporate_income_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Profit After Tax</td>
+                <td>$ 000s</td>
+                {% for profit_after_tax in profit_after_taxes %}
+                    <td>{{ profit_after_tax|currency_format }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </div>
+
+</section>
+
+<section class="financial-statement-section">
+    <h1>Cash Flow</h1>
+    <div class="financial-statement-div">
+        <table>
+            <tr>
+                <th>Line Item</th>
+                <th>Unit</th>
+                {% for scenario in scenarios %}
+                    <th>{{ scenario.scenario_name }}</th>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Cash Received From Invoices</td>
+                <td>$ 000s</td>
+                {% for cash_received_from_invoice in cash_received_from_invoices %}
+                    <td>{{ cash_received_from_invoice|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Cash Paid For Expenses</td>
+                <td>$ 000s</td>
+                {% for cash_paid_for_expense in cash_paid_for_expenses %}
+                    <td>{{ cash_paid_for_expense|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Corporate Income Tax Paid</td>
+                <td>$ 000s</td>
+                {% for tax_paid in taxes_paid %}
+                    <td>{{ tax_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Flow Available For Senior Debt Service</td>
+                <td>$ 000s</td>
+                {% for cash_flow_available_for_senior_debt_service in cash_flow_available_for_senior_debt_services %}
+                    <td>{{ cash_flow_available_for_senior_debt_service|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Interest</td>
+                <td>$ 000s</td>
+                {% for senior_debt_interest in senior_debt_interests %}
+                    <td>{{ senior_debt_interest|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Senior Debt Principal Repayment</td>
+                <td>$ 000s</td>
+                {% for senior_debt_principal_repayment in senior_debt_principal_repayments %}
+                    <td>{{ senior_debt_principal_repayment|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Flow Available For Refinancing Facility</td>
+                <td>$ 000s</td>
+                {% for cash_flow_available_for_refinancing_facility in cash_flow_available_for_refinancing_facilities %}
+                    <td>{{ cash_flow_available_for_refinancing_facility|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>RCF Drawdown</td>
+                <td>$ 000s</td>
+                {% for rcf_drawdown in rcf_drawdowns %}
+                    <td>{{ rcf_drawdown|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>RCF Principal Repayment</td>
+                <td>$ 000s</td>
+                {% for rcf_principal_repayment in rcf_principal_repayments %}
+                    <td>{{ rcf_principal_repayment|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>RCF Interest Paid</td>
+                <td>$ 000s</td>
+                {% for rcf_interest_paid in rcf_interest_paids %}
+                    <td>{{ rcf_interest_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Available For Shareholders</td>
+                <td>$ 000s</td>
+                {% for cash_flow_available_for_shareholder in cash_flow_available_for_shareholders %}
+                    <td>{{ cash_flow_available_for_shareholder|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Share Capital Redemption</td>
+                <td>$ 000s</td>
+                {% for share_capital_redemption in share_capital_redemptions %}
+                    <td>{{ share_capital_redemption|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Cash Available For Dividends</td>
+                <td>$ 000s</td>
+                {% for cash_flow_available_for_dividend in cash_flow_available_for_dividends %}
+                    <td>{{ cash_flow_available_for_dividend|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td>Dividends Paid</td>
+                <td>$ 000s</td>
+                {% for dividends_paid in dividends_paids %}
+                    <td>{{ dividends_paid|currency_format }}</td>
+                {% endfor %}
+            </tr>
+
+            <tr class="total-row">
+                <td>Net Cash Flow</td>
+                <td>$ 000s</td>
+                {% for net_cash_flow in net_cash_flows %}
+                    <td>{{ net_cash_flow|currency_format }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,257 @@
+{% extends "financialmodel/layout.html" %}
+
+{% load static %}
+{% load financial_filters %}
+
+{% block body %}
+
+    <h1>Expense</h1>
+
+    <section class="calculation-section">
+        <h1>Expense</h1>
+        <div class="calculation-div">
+            <table>
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                {% for timeline in timelines %}
+                    <th>{{ timeline.date }}</th>
+                {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Annual Expense</td>
+                    <td>$ 000s</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.annual_om_cost|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Number of periods in a year</td>
+                    <td>periods</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>4</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Escalation Factor</td>
+                    <td></td>
+                    <td><a href="{% url 'quarterly_financial_statements_escalation' scenario.id %}">Escalation</a></td>
+                    {% for expense in expenses %}
+                        <td>{{ expense.escalation_factor }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Operating Period Flag</td>
+                    <td>flag</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.operating_period_flag }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Expense Amout</td>
+                    <td>$ 000s</td>
+                    <td>(Annual Expense/Number of periods in a year) * Escalation Factor * Operating Period Flag</td>
+                    {% for expense in expenses %}
+                        <td>{{ expense.expense|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+            </table>
+        </div>
+    </section>
+
+    <section class="calculation-section">
+        <h1>Accounts Payable</h1>
+        <div class="calculation-div">
+            <table>
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                {% for timeline in timelines %}
+                    <th>{{ timeline.date }}</th>
+                {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Accounts Payable Days</td>
+                    <td>Days</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.accounts_payable_days }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Days In Period</td>
+                    <td>Days</th>
+                    <td></th>
+                {% for timeline in timelines %}
+                    <td>{{ timeline.days_in_period }}</td>
+                {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Expense Amout</td>
+                    <td>$ 000s</td>
+                    <td>(Annual Expense/Number of periods in a year) * Escalation Factor * Operating Period Flag</td>
+                    {% for expense in expenses %}
+                        <td>{{ expense.expense|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class=total-row>
+                    <td>Forecast Accounts Payable Balance</td>
+                    <td>$ 000s</td>
+                    <td>Expense Amount * (Accounts Payable Days/Days In Period)</td>
+                    {% for forecast_accounts_payable_balance in forecast_accounts_payable_balances %}
+                        <td>{{ forecast_accounts_payable_balance|currency_format|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <section class="calculation-section">
+        <h1>Cash Paid For Expense</h1>
+
+            <div class="calculation-div">
+                <table>
+
+                    <tr>
+                        <th>Line item</th>
+                        <th>Unit</th>
+                        <th>Formula</th>
+                    {% for timeline in timelines %}
+                        <th>{{ timeline.date }}</th>
+                    {% endfor %}
+                    </tr>
+
+                    <tr>
+                        <td>Accounts Payable Balance BEG</td>
+                        <td>$ 000s</td>
+                        <td></td>
+                        {% for accounts_payable_balance_beg in accounts_payable_balance_begs %}
+                            <td>{{ accounts_payable_balance_beg|currency_format }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr>
+                        <td>Expense Amout</td>
+                        <td>$ 000s</td>
+                        <td>(Annual Expense/Number of periods in a year) * Escalation Factor * Operating Period Flag</td>
+                        {% for expense in expenses %}
+                            <td>{{ expense.expense|currency_format }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr class="total-row">
+                        <td>Forecast Accounts Payable Balance</td>
+                        <td>$ 000s</td>
+                        <td>Expense Amount * (Accounts Payable Days/Days In Period)</td>
+                        {% for forecast_accounts_payable_balance in forecast_accounts_payable_balances %}
+                            <td>{{ forecast_accounts_payable_balance|currency_format }}</td>
+                        {% endfor %}
+                    </tr>
+
+                    <tr class="total-row">
+                        <td>Cash Paid For Expense</td>
+                        <td>$ 000s</td>
+                        <td>Accounts Payable Balance BEG + Expense Amount - Forecast Accounts Payable Balance</td>
+                        {% for expense in expenses %}
+                            <td>{{ expense.cash_paid_for_expense|currency_format }}</td>
+                        {% endfor %}
+                    </tr>
+                </table>
+            </div>
+
+    </section>
+
+    <section class="calculation-section">
+        <h1>Accounts Payable Balance</h1>
+        <div class="calculation-div">
+            <table>
+
+                <tr>
+                    <th>Line item</th>
+                    <th>Unit</th>
+                    <th>Formula</th>
+                {% for timeline in timelines %}
+                    <th>{{ timeline.date }}</th>
+                {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Accounts Payable - Initial Balance</td>
+                    <td>$ 000s</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ inputs.accounts_payable_innit|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Financial Close Date Flag</td>
+                    <td>Flag</td>
+                    <td></td>
+                    {% for timeline in timelines %}
+                        <td>{{ timeline.finance_close_flag }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr>
+                    <td>Accounts Payable Balance BEG</td>
+                    <td>$ 000s</td>
+                    <td></td>
+                    {% for accounts_payable_balance_beg in accounts_payable_balance_begs %}
+                        <td>{{ accounts_payable_balance_beg|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Expense Amout</td>
+                    <td>$ 000s</td>
+                    <td>(Annual Expense/Number of periods in a year) * Escalation Factor * Operating Period Flag</td>
+                    {% for expense in expenses %}
+                        <td>{{ expense.expense|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Cash Paid For Expense</td>
+                    <td>$ 000s</td>
+                    <td>Accounts Payable Balance BEG + Expense Amount - Forecast Accounts Payable Balance</td>
+                    {% for expense in expenses %}
+                        <td>{{ expense.cash_paid_for_expense|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+                <tr class="total-row">
+                    <td>Accounts Payable Balance</td>
+                    <td>$ 000s</td>
+                    <td>If Financial Close Date Flag = 1, Accounts Payable Initial Balance, else, Accounts Payable Balance BEG + Expense Amount - Cash Paid For Expense</td>
+                    {% for expense in expenses %}
+                        <td>{{ expense.accounts_payable|currency_format }}</td>
+                    {% endfor %}
+                </tr>
+
+            </table>
+        </div>
+    </section>
+
+
+
+{% endblock %}
