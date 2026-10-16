@@ -102,8 +102,6 @@ def calculate(input, action):
 
         date = timeline.date
 
-        print(f"for {date}, the cash flow is {cash_flow}")
-
         year = date.year
         month = date.month
         day = calendar.monthrange(year, month)[1] 
@@ -489,18 +487,6 @@ def calculate_expense(action, index, expe, exp_cpi, growthrate, cpi_at_signed_da
         accounts_payable = accounts_payable_bal
     else:
         accounts_payable = float(accounts_payable_balance_beg) + o_m_expense - cash_paid_for_om_costs
-
-
-    if timeline.date == datetime.date(2021, 6, 30):
-        print("Before Save")
-        print("o_m_expense:", repr(o_m_expense))
-        print("forecast AP:", repr(forecast_accounts_payable))
-        print("cash paid:", repr(cash_paid_for_om_costs))
-        print("accounts payable:", repr(accounts_payable))
-
-        print("expense - cash paid:", repr(o_m_expense - cash_paid_for_om_costs))
-
-        print("AP Difference:", accounts_payable - (o_m_expense - cash_paid_for_om_costs))
     
     if action == "create":
         expense = Expense.objects.create(

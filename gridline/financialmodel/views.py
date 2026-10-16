@@ -44,9 +44,9 @@ class ScenarioForm(forms.Form):
     q2_sa = forms.DecimalField(label="Q2 Seasonal Adjustment '%' of annual yield", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
     q3_sa = forms.DecimalField(label="Q3 Seasonal Adjustment '%' of annual yield", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
     q4_sa = forms.DecimalField(label="Q4 Seasonal Adjustment '%' of annual yield", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
-    annual_degredation = forms.DecimalField(label="Annual Degredation", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
+    annual_degredation = forms.DecimalField(label="Annual Degradation %", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
     year_1_p50_production = forms.DecimalField(label="Year 1 p50 Production", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
-    availability = forms.DecimalField(label="Availability", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
+    availability = forms.DecimalField(label="Availability %", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
     power_tarrif = forms.DecimalField(label="Power Tariff", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
     annual_om_cost = forms.DecimalField(label="Annual Real O&M Cost", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
     cpi_at_close = forms.DecimalField(label="Expected CPI at close", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
@@ -95,9 +95,9 @@ class UpdateScenarioForm(forms.Form):
     q2_sa = forms.DecimalField(label="Revenue: Q2 Seasonal Adjustment '%' of annual yield", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
     q3_sa = forms.DecimalField(label="Revenue: Q3 Seasonal Adjustment '%' of annual yield", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
     q4_sa = forms.DecimalField(label="Revenue: Q4 Seasonal Adjustment '%' of annual yield", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100)
-    annual_degredation = forms.DecimalField(label="Revenue: Annual Degredation", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
+    annual_degredation = forms.DecimalField(label="Revenue: Annual Degradation %", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
     year_1_p50_production = forms.DecimalField(label="Revenue: Year 1 p50 Production", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
-    availability = forms.DecimalField(label="Revenue: Availability", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100 )
+    availability = forms.DecimalField(label="Revenue: Availability %", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0, max_value=100 )
     power_tarrif = forms.DecimalField(label="Revenue: Power Tariff", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
     annual_om_cost = forms.DecimalField(label="OPEX: Annual Real O&M Cost", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
     cpi_at_close = forms.DecimalField(label="OPEX: Expected CPI at close", widget=forms.NumberInput(attrs={"class": "scenarioform"}), min_value=0)
@@ -132,8 +132,6 @@ class UpdateScenarioForm(forms.Form):
 # Create your views here.
 def index(request):
 
-    print("hello world")
-
     return render(request, "financialmodel/index.html")
 
 
@@ -147,8 +145,6 @@ def login_view(request):
             username = request.POST["username"]
             password = request.POST["password"]
             user = authenticate(request, username=username, password=password)
-
-            print(f"user is {user}")
 
             if user is not None:
                 login(request, user)
@@ -181,8 +177,9 @@ def register(request):
             confirm = request.POST["confirm"]
 
             if password != confirm:
-                return render(request, "logger/register.html", {
-                    "message": "passwords do not match"
+                return render(request, "financialmodel/register.html", {
+                    "message": "passwords do not match",
+                    "form": form
                 })
             
             
@@ -191,7 +188,8 @@ def register(request):
                 user.save()
             except IntegrityError:
                 return render(request, "financialmodel/register.html", {
-                    "message": "username is already in use"
+                    "message": "username is already in use",
+                    "form": form
                 })
             
             login(request, user)
@@ -254,8 +252,6 @@ def viewprojects(request, user):
         return render(request, "financialmodel/viewprojects.html", {
             "message": "Project details will be displayed once projects and scenarios have been created"
         })
-    
-    print(metrics)
 
     
     return render(request, "financialmodel/viewprojects.html", {
@@ -273,8 +269,6 @@ def createscenario(request):
 
 
     projects = Project.objects.all().filter(owner=current_user)
-
-    print(projects)
 
     if not projects.exists():
         return render(request, "financialmodel/createproject.hmtl", {
@@ -298,29 +292,22 @@ def createscenario(request):
 
             first_date_of_time_rulers = str(request.POST["first_date_of_time_rulers"])
 
-            print(first_date_of_time_rulers)
-
             first_date_of_time_rulers = datefunction(first_date_of_time_rulers)
 
             end_of_first_operating_period = str(request.POST["end_of_first_operating_period"])
 
             end_of_first_operating_period = datefunction(end_of_first_operating_period)
 
-            print(f"end of first operating period is {end_of_first_operating_period}")
-
             acquisition_date = str(request.POST["acquisition_date"])
 
             acquisition_date = datefunction(acquisition_date)
 
             validation_one = acquisition_date - first_date_of_time_rulers
-            print(validation_one.days)
 
             if int(validation_one.days) < 0:
                 return render(request, "financialmodel/error.html", {
                     "error": "Acquisition Date must be after the start of the model date."
                 })
-
-            print(f"acquisition_date is {acquisition_date}")
 
             length_of_contract = int(request.POST["length_of_contract"])
 
@@ -333,8 +320,6 @@ def createscenario(request):
                 return render(request, "financialmodel/error.html", {
                     "error": "Seasonality must add up to 100"
                 })
-
-            print(f"length of contract: {length_of_contract}, q1: {q1_sa}, q2: {q2_sa}, q3: {q3_sa}, q4: {q4_sa}")
 
             
 
@@ -425,8 +410,6 @@ def createscenario(request):
                 tax_losses_carried_forward_innit = tax_losses_carried_forward_innit
             )
             input.save()
-
-            print("yay")
 
             calculate(input, "create")
 
@@ -585,34 +568,7 @@ def quarterly_financial_statements(request, id):
 
         statuses.append(status)
 
-        day = 30
-        month = 6
-        year = 2021
 
-        test_date =  datetime.date(year, month, day)
-
-        print("timeline is", timeline.date)
-        if (timeline.date == test_date):
-            print("DATE:", timeline.date)
-
-            print("Solar asset:", depreciation.solar_asset_value)
-            print("Retained cash:", retained_earning.retained_cash)
-            print("AR:", revenue.accounts_receivable)
-
-            print("Expense", expense.expense)
-            print("expense paid", expense.cash_paid_for_expense)
-            print("AP:", expense.accounts_payable)
-            print("Expense - cash paid:", expense.expense - expense.cash_paid_for_expense)
-
-            print("Senior debt:", debt.senior_debt)
-            print("RCF:", rcf.rcf_balance)
-            print("Deferred tax:", deferred_tax.deferred_tax)
-            print("Share capital:", share_capital.share_capital)
-            print("Retained earnings:", retained_earning.retained_earnings)
-
-            print("TOTAL ASSETS:", total_asset)
-            print("TOTAL L+E:", total_liability)
-            print("CHECK:", total_asset - total_liability)
 
     
 
@@ -733,8 +689,6 @@ def annual_financial_statements(request, id):
     for i in range(len(timelines)):
 
         timeline = timelines[i]
-
-        print(timeline.date.month)
 
         if inputs.acquisition_date.month == timeline.date.month:
             revenue_object = Revenue.objects.get(timeline_event=timeline)
@@ -955,8 +909,6 @@ def annual_financial_statements(request, id):
             net_cash_flow += net_cash_flow_object.net_cash_flow
 
 
-    
-    print(revenues)
     return render(request, "financialmodel/annual_financial_statements.html", {
         "scenario": scenario,
         "timelines": year_end_timelines,
@@ -1055,10 +1007,7 @@ def quarterly_financial_statements_revenue(request, id):
             contract_year_number = timeline.contract_year_number
             operating_period_flag = timeline.operating_period_flag
 
-            print(f"annual degredation is {annual_degredation}")
-
             compound_degredation = float(1/((1+annual_degredation) ** (contract_year_number - 1))) * operating_period_flag
-            print(compound_degredation)
             compound_degredations.append(compound_degredation)
 
             previous_timeline = timelines[i-1]
@@ -2192,7 +2141,6 @@ def project_comparison(request, id):
             senior_debt_interest += debt_object.senior_debt_interest
 
             rcf_object = Rcf.objects.get(timeline_event=timeline)
-            print(f"for period: {rcf_object.timeline_event.date}, the rcf balance is {rcf_object.rcf_balance}")
             rcf_interest += rcf_object.rcf_interest
 
             profit_before_tax_object = Profit_before_tax.objects.get(timeline_event=timeline)
